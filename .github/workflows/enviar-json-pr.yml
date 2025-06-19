@@ -29,7 +29,7 @@ jobs:
           path: recibir-pr-test
 
       - name: Copiar JSON al repo destino
-        run: cp output.json recibir-pr-test/
+        run: cp output.json recibir-pr-test/output.json
 
       - name: Crear nueva rama, commit y push en repo destino
         run: |
