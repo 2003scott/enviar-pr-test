@@ -1,0 +1,48 @@
+name: Crear y enviar JSON como PR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout este repo
+        uses: actions/checkout@v4
+
+      - name: Instalar dependencias
+        run: npm install
+
+      - name: Ejecutar script para crear JSON
+        run: npm run script
+
+      - name: Clonar repo destino
+        uses: actions/checkout@v4
+        with:
+          repository: 2003scott/recibir-pr-test
+          token: ${{ secrets.TARGET_REPO_TOKEN }}
+          path: recibir-pr-test
+
+      - name: Copiar JSON al repo destino
+        run: cp output.json recibir-pr-test/
+
+      - name: Crear nueva rama y push
+        run: |
+          cd recibir-pr-test
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b agregar-json-${{ github.run_id }}
+          git add output.json
+          git commit -m "Agregar output.json generado automáticamente"
+          git push origin agregar-json-${{ github.run_id }}
+
+      - name: Crear Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.TARGET_REPO_TOKEN }}
+          path: recibir-pr-test
+          commit-message: "Agregar output.json generado automáticamente"
+          branch: agregar-json-${{ github.run_id }}
+          base: main
+          title: "Agregar output.json generado automáticamente"
+          body: "Este PR agrega el archivo output.json generado por el workflow."
