@@ -16,14 +16,6 @@ jobs:
       - name: Ejecutar script para crear JSON
         run: npm run script
 
-      - name: Crear nueva rama y mover JSON
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b agregar-json-${{ github.run_id }}
-          git add output.json
-          git commit -m "Agregar output.json generado automáticamente"
-
       - name: Clonar repo destino
         uses: actions/checkout@v4
         with:
@@ -33,6 +25,16 @@ jobs:
 
       - name: Copiar JSON al repo destino
         run: cp output.json recibir-pr-test/
+
+      - name: Crear nueva rama, commit y push en repo destino
+        run: |
+          cd recibir-pr-test
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b agregar-json-${{ github.run_id }}
+          git add output.json
+          git commit -m "Agregar output.json generado automáticamente"
+          git push origin agregar-json-${{ github.run_id }}
 
       - name: Crear Pull Request
         uses: peter-evans/create-pull-request@v6
