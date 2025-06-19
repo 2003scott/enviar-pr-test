@@ -2,6 +2,11 @@ name: Crear y enviar JSON como PR
 
 on:
   workflow_dispatch:
+    inputs:
+      target_repo_token:
+        description: 'Token de acceso al repo destino'
+        required: true
+        type: string
 
 jobs:
   build-and-pr:
@@ -20,6 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 2003scott/recibir-pr-test
+          token: ${{ github.event.inputs.target_repo_token }}
           path: recibir-pr-test
 
       - name: Copiar JSON al repo destino
@@ -38,6 +44,7 @@ jobs:
       - name: Crear Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ github.event.inputs.target_repo_token }}
           path: recibir-pr-test
           commit-message: "Agregar output.json generado automáticamente"
           branch: agregar-json-${{ github.run_id }}
