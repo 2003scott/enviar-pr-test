@@ -20,7 +20,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 2003scott/recibir-pr-test
-          token: ${{ secrets.TARGET_REPO_TOKEN }}
           path: recibir-pr-test
 
       - name: Copiar JSON al repo destino
@@ -39,7 +38,6 @@ jobs:
       - name: Crear Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.TARGET_REPO_TOKEN }}
           path: recibir-pr-test
           commit-message: "Agregar output.json generado automáticamente"
           branch: agregar-json-${{ github.run_id }}
