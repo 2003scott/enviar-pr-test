@@ -37,7 +37,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b agregar-json-${{ github.run_id }}
-          git add output.json
+          git add .
           git commit -m "Agregar output.json generado automáticamente"
           git push origin agregar-json-${{ github.run_id }}
 
